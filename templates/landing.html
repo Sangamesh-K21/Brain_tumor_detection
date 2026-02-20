@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain MRI Tumor Detection</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --dark-blue: #0f172a;
+            --light-blue: #3b82f6;
+            --neural-purple: #8b5cf6;
+            --brain-teal: #06b6d4;
+            --accent-pink: #ec4899;
+            --light-bg: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, var(--dark-blue), #1e293b);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: #ffffff;
+        }
+        
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(90deg, var(--light-blue), var(--brain-teal), var(--neural-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: all 0.4s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.2);
+        }
+        
+        .section-bg {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        .section-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.2));
+            z-index: -1;
+        }
+        
+        /* Neural Network Pattern */
+        .neural-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 2px, transparent 2px);
+            background-size: 40px 40px;
+        }
+        
+        .nav-blur {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .team-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 4px solid;
+            border-image: linear-gradient(45deg, var(--light-blue), var(--neural-purple)) 1;
+            transition: all 0.4s ease;
+        }
+        
+        .team-img:hover {
+            transform: scale(1.08);
+            border-image: linear-gradient(45deg, var(--brain-teal), var(--accent-pink)) 1;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--light-blue), var(--neural-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--light-blue), var(--primary-blue));
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, var(--primary-blue), var(--neural-purple));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid var(--light-blue);
+            color: #e2e8f0;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--brain-teal);
+            color: var(--brain-teal);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--light-blue), var(--neural-purple));
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .footer-link {
+            color: rgba(226, 232, 240, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--brain-teal);
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            color: var(--light-blue);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .social-icon:hover {
+            background: linear-gradient(135deg, var(--light-blue), var(--neural-purple));
+            color: white;
+            transform: translateY(-5px);
+            border-color: transparent;
+        }
+        
+        .floating {
+            animation: floating 4s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        .pulse {
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+                transform: scale(1);
+            }
+            70% { 
+                box-shadow: 0 0 0 20px rgba(6, 182, 212, 0);
+                transform: scale(1.05);
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+                transform: scale(1);
+            }
+        }
+        
+        /* Brain wave animation */
+        .brain-wave {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brain-wave::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            animation: wave 3s infinite linear;
+        }
+        
+        @keyframes wave {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Stats counter */
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--light-blue), var(--brain-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark-blue);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--light-blue), var(--neural-purple));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--brain-teal), var(--accent-pink));
+        }
+    </style>
+</head>
+
+<body class="neural-pattern">
+    <!-- Header/Navigation -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg py-3 nav-blur">
+            <div class="container">
+                <a class="navbar-brand fw-bold fs-3 d-flex align-items-center" href="#">
+                    <div class="me-2 position-relative">
+                        <i class="bi bi-brain fs-2" style="color: var(--brain-teal);"></i>
+                        <div class="position-absolute top-0 start-100 translate-middle">
+                            <div class="pulse rounded-circle" style="width: 10px; height: 10px; background: var(--accent-pink);"></div>
+                        </div>
+                    </div>
+                    <span class="text-white">Neuro<span class="text-gradient">Scan</span> AI</span>
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon" style="filter: invert(1);"><i class="bi bi-list fs-4" style="color: var(--light-blue);"></i></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="#how-it-works">How It Works</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="#team">Our Team</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="#contact">Contact</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a href="/login" class="btn btn-primary-custom mx-2">Login</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a href="/register" class="btn btn-outline-custom">Register</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="section-bg py-5 brain-wave" style="background-image: url('https://imgs.search.brave.com/u5IABwc2zoJkkmqZN8jrgTgz4EkdXOpVDAUT8wHu1zA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDU2NzA1/NDYuanBn');">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="glass-card p-4 p-md-5">
+                        <h1 class="fw-bold display-4 mb-3">
+                            <span class="text-gradient">Brain MRI Tumor Detection</span>
+                        </h1>
+                        <p class="lead mb-4 fs-5" style="color: #cbd5e1;">
+                            Advanced AI-powered neural network for accurate and early detection of brain tumors from MRI scans. Our deep learning algorithm mimics the human brain's pattern recognition with 99.2% accuracy.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 mt-5">
+                            <a href="/login" class="btn btn-primary-custom">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Start Diagnosis
+                            </a>
+                            <a href="#how-it-works" class="btn btn-outline-custom">
+                                <i class="bi bi-play-circle me-2"></i> See How It Works
+                            </a>
+                        </div>
+                        
+                        <div class="row mt-5 pt-4">
+                            <div class="col-4 text-center">
+                                <div class="stat-number">99.2%</div>
+                                <p class="text-muted">Accuracy</p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stat-number">8.5K+</div>
+                                <p class="text-muted">Scans Analyzed</p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stat-number">24/7</div>
+                                <p class="text-muted">Availability</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="position-relative floating">
+                        <div class="glass-card p-4">
+                            <div class="position-relative">
+                                <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                     alt="Brain MRI Scan" class="img-fluid rounded-3" style="border: 2px solid rgba(59, 130, 246, 0.3);">
+                                <div class="position-absolute top-0 start-0 m-4">
+                                    <span class="badge p-3" style="background: linear-gradient(135deg, var(--light-blue), var(--neural-purple)); font-size: 1rem;">AI Analysis Active</span>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 m-4">
+                                    <div class="pulse rounded-circle d-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--brain-teal), var(--accent-pink));">
+                                        <i class="bi bi-cpu-fill fs-2 text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="fw-bold">Neural Network Analysis</h4>
+                                <p style="color: #cbd5e1;">Our convolutional neural networks analyze MRI scans in real-time, highlighting potential tumor regions with precision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-bg py-5" style="background-image: url('https://imgs.search.brave.com/4wpbPQCYhUEX9QfM7yf76zojG7fEKbaN0tKE_PfsWJE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjYv/MzExLzc5MS9zbWFs/bC9pbGx1c3RyYXRp/b24tb2YtbmV1cm9u/LWNlbGwtYnJhaW4t/Y2VsbC1uZXVyb25z/LW5lcnZvdXMtc3lz/dGVtLWFpLWdlbmVy/YXRlLWZyZWUtcGhv/dG8uanBn');">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 mb-3 text-gradient">How It Works</h2>
+                <p class="lead col-lg-8 mx-auto" style="color: #cbd5e1;">Our AI system mimics the neural pathways of the human brain to detect abnormalities in MRI scans</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 h-100 text-center">
+                        <div class="step-number mx-auto">1</div>
+                        <h4 class="fw-bold mb-3">Upload Scan</h4>
+                        <p style="color: #cbd5e1;">Securely upload brain MRI scans in DICOM or standard image formats through our encrypted portal.</p>
+                        <div class="feature-icon">
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 h-100 text-center">
+                        <div class="step-number mx-auto">2</div>
+                        <h4 class="fw-bold mb-3">Neural Processing</h4>
+                        <p style="color: #cbd5e1;">Our deep neural network with 152 layers processes the scan, mimicking human brain pattern recognition.</p>
+                        <div class="feature-icon">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 h-100 text-center">
+                        <div class="step-number mx-auto">3</div>
+                        <h4 class="fw-bold mb-3">Tumor Detection</h4>
+                        <p style="color: #cbd5e1;">The AI identifies tumor regions, classifies them by type (glioma, meningioma, pituitary), and assesses severity.</p>
+                        <div class="feature-icon">
+                            <i class="bi bi-search-heart-fill"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 h-100 text-center">
+                        <div class="step-number mx-auto">4</div>
+                        <h4 class="fw-bold mb-3">Detailed Report</h4>
+                        <p style="color: #cbd5e1;">Receive a comprehensive report with 3D visualizations, risk assessment, and treatment recommendations.</p>
+                        <div class="feature-icon">
+                            <i class="bi bi-file-bar-graph-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5 pt-5">
+                <div class="glass-card p-4 p-md-5 brain-wave">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 class="fw-bold mb-3 text-gradient">Ready to Analyze Your MRI Scan?</h3>
+                            <p class="mb-0" style="color: #cbd5e1;">Join medical professionals worldwide using our neural network AI for precise brain tumor detection.</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                            <a href="/register" class="btn btn-primary-custom btn-lg">
+                                <i class="bi bi-person-plus me-2"></i> Get Started Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section-bg py-5" style="background-image: url('https://imgs.search.brave.com/9H6Hqup_wu2rjyUQYDZRMJJGo-UcpqFLAaLBkAeuyMU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJhY2Nlc3Mu/Y29tL2Z1bGwvMjE1/OTUxNC5qcGc');">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 mb-3 text-gradient">Neuroscience & AI Experts</h2>
+                <p class="lead col-lg-8 mx-auto" style="color: #cbd5e1;">Our team combines neuroscience expertise with cutting-edge AI research</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 text-center h-100">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                 alt="Dr. Sarah Johnson" class="team-img rounded-circle mx-auto">
+                        </div>
+                        <h4 class="fw-bold mb-1">Dr. Sarah Johnson</h4>
+                        <p class="mb-3" style="color: var(--brain-teal); font-weight: 500;">Lead Neurologist</p>
+                        
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 text-center h-100">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                 alt="Michael Chen" class="team-img rounded-circle mx-auto">
+                        </div>
+                        <h4 class="fw-bold mb-1">Michael Chen</h4>
+                        <p class="mb-3" style="color: var(--brain-teal); font-weight: 500;">AI Research Lead</p>
+                        
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 text-center h-100">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                 alt="Dr. Maria Rodriguez" class="team-img rounded-circle mx-auto">
+                        </div>
+                        <h4 class="fw-bold mb-1">Dr. Maria Rodriguez</h4>
+                        <p class="mb-3" style="color: var(--brain-teal); font-weight: 500;">Neuro-Radiologist</p>
+                        
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="glass-card p-4 text-center h-100">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005-128?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                 alt="David Park" class="team-img rounded-circle mx-auto">
+                        </div>
+                        <h4 class="fw-bold mb-1">David Park</h4>
+                        <p class="mb-3" style="color: var(--brain-teal); font-weight: 500;">Neural Engineer</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="py-5" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <a class="navbar-brand fw-bold fs-3 d-flex align-items-center mb-4" href="#">
+                        <div class="me-2 position-relative">
+                            <i class="bi bi-brain fs-2" style="color: var(--brain-teal);"></i>
+                            <div class="position-absolute top-0 start-100 translate-middle">
+                                <div class="pulse rounded-circle" style="width: 10px; height: 10px; background: var(--accent-pink);"></div>
+                            </div>
+                        </div>
+                        <span class="text-white">Neuro<span class="text-gradient">Scan</span> AI</span>
+                    </a>
+                    <p class="mb-4" style="color: #cbd5e1;">Advanced neural network AI for precise brain tumor detection from MRI scans. Combining neuroscience with cutting-edge artificial intelligence.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><a href="#home" class="footer-link d-flex align-items-center"><i class="bi bi-chevron-right me-2" style="color: var(--light-blue);"></i> Home</a></li>
+                        <li class="mb-3"><a href="#how-it-works" class="footer-link d-flex align-items-center"><i class="bi bi-chevron-right me-2" style="color: var(--light-blue);"></i> How It Works</a></li>
+                        <li class="mb-3"><a href="#team" class="footer-link d-flex align-items-center"><i class="bi bi-chevron-right me-2" style="color: var(--light-blue);"></i> Our Team</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-chevron-right me-2" style="color: var(--light-blue);"></i> Research Papers</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-chevron-right me-2" style="color: var(--light-blue);"></i> Case Studies</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">Services</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-check-circle me-2" style="color: var(--brain-teal);"></i> MRI Analysis</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-check-circle me-2" style="color: var(--brain-teal);"></i> Tumor Detection</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-check-circle me-2" style="color: var(--brain-teal);"></i> Medical Reports</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-check-circle me-2" style="color: var(--brain-teal);"></i> Second Opinion</a></li>
+                        <li class="mb-3"><a href="#" class="footer-link d-flex align-items-center"><i class="bi bi-check-circle me-2" style="color: var(--brain-teal);"></i> API Integration</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5 class="fw-bold mb-4">Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-4 d-flex align-items-start">
+                            <i class="bi bi-geo-alt me-2 mt-1" style="color: var(--light-blue);"></i>
+                            <span class="footer-link">123 Neuroscience Center, Boston, MA 02115</span>
+                        </li>
+                        <li class="mb-4 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2" style="color: var(--light-blue);"></i>
+                            <a href="mailto:contact@neuroscan.ai" class="footer-link">contact@neuroscan.ai</a>
+                        </li>
+                        <li class="mb-4 d-flex align-items-center">
+                            <i class="bi bi-phone me-2" style="color: var(--light-blue);"></i>
+                            <a href="tel:+15551234567" class="footer-link">+1 (555) 123-4567</a>
+                        </li>
+                        <li class="mb-4 d-flex align-items-center">
+                            <i class="bi bi-shield-check me-2" style="color: var(--brain-teal);"></i>
+                            <span class="footer-link">HIPAA Compliant & Secure</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-5" style="border-color: rgba(59, 130, 246, 0.2);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0" style="color: #94a3b8;">&copy; 2023 NeuroScan AI. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="/login" class="btn btn-primary-custom me-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                    </a>
+                    <a href="/register" class="btn btn-outline-custom">
+                        <i class="bi bi-person-plus me-2"></i> Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Add smooth scrolling to all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-blur');
+            } else {
+                navbar.classList.remove('nav-blur');
+            }
+        });
+        
+        // Add animation to stats counters
+        function animateCounter(element, target, duration) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target + (element.textContent.includes('K') ? 'K+' : '%');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start) + (element.textContent.includes('K') ? 'K+' : '%');
+                }
+            }, 16);
+        }
+        
+        // Initialize counters when in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const stats = document.querySelectorAll('.stat-number');
+                    stats.forEach(stat => {
+                        const value = parseFloat(stat.textContent);
+                        if (!isNaN(value)) {
+                            stat.textContent = '0' + (stat.textContent.includes('K') ? 'K+' : '%');
+                            animateCounter(stat, value, 2000);
+                        }
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(document.querySelector('#home'));
+    </script>
+</body>
+</html>
